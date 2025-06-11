@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_admin_panel_flutter/presentation/pages/dashboard_page.dart';
 import 'package:responsive_admin_panel_flutter/presentation/pages/sign_in_page.dart';
+import 'package:responsive_admin_panel_flutter/presentation/pages/splas_page.dart';
+import 'package:responsive_admin_panel_flutter/presentation/pages/team_page.dart';
 import 'package:responsive_admin_panel_flutter/presentation/routes/route_names.dart';
 
 class AppRouter {
@@ -13,7 +15,7 @@ class AppRouter {
       case RouteNames.dashboard:
         return _buildRoute(settings, const DashboardPage());
       case RouteNames.teams:
-        return _buildRoute(settings, const DashboardPage());
+        return _buildRoute(settings, const TeamPage());
       // Add more routes here
       default:
         return _buildRoute(
@@ -33,13 +35,4 @@ class AppRouter {
       builder: (BuildContext context) => builder,
     );
   }
-}
-
-// Placeholder widget classes - Replace with actual page widgets
-class SplashPage extends StatelessWidget {
-  const SplashPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:responsive_admin_panel_flutter/presentation/providers/auth_provider.dart';
+import 'package:responsive_admin_panel_flutter/presentation/providers/team_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'injection_container.dart' as di;
 import 'core/constants/app_constants.dart';
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider(prefs)),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => TeamProvider()),
         // Add other providers here
       ],
       child: Consumer<ThemeProvider>(

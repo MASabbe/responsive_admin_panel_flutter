@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.0"
+  auto_injector:
+    dependency: transitive
+    description:
+      name: auto_injector
+      sha256: ad7a95d7c381363d48b54e00cb680f024fd97009067244454e9b4850337608e8
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -41,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
+  crypto:
+    dependency: transitive
+    description:
+      name: crypto
+      sha256: "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.6"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -105,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.23.0"
+  fixnum:
+    dependency: transitive
+    description:
+      name: fixnum
+      sha256: b6dc7065e46c974bc7c5f143080a6764ec7a4be6da1285ececdc37be96de53be
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   fl_chart:
     dependency: "direct main"
     description:
@@ -139,6 +163,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_modular:
+    dependency: "direct main"
+    description:
+      name: flutter_modular
+      sha256: "474eb0bc7e29bdd21cff8eb9c051e4e8cef952d46fc56618c8b3e1bc707dcbfa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.4.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -213,6 +245,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.16.0"
+  modular_core:
+    dependency: transitive
+    description:
+      name: modular_core
+      sha256: c575dcdb6cef281dd62fc877ae0c597a2fdc33c8de86a7a251142a21f4f3b4e9
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.0"
   nested:
     dependency: transitive
     description:
@@ -277,6 +317,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.5"
+  result_dart:
+    dependency: transitive
+    description:
+      name: result_dart
+      sha256: eecf5b08b63572b348bfaa56a50f30191fe21d9edacef59d0e19a33905dd184d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -346,6 +394,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.1"
+  sprintf:
+    dependency: transitive
+    description:
+      name: sprintf
+      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
   stack_trace:
     dependency: transitive
     description:
@@ -402,6 +458,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
+  uuid:
+    dependency: transitive
+    description:
+      name: uuid
+      sha256: a5be9ef6618a7ac1e964353ef476418026db906c4facdedaa299b7a2e71690ff
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.5.1"
   vector_math:
     dependency: transitive
     description:

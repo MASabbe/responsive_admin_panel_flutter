@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:responsive_admin_panel_flutter/data/models/team_model.dart';
 
-class TeamService extends ChangeNotifier {
+class TeamProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isEmpty = false;
 

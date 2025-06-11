@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:responsive_admin_panel_flutter/data/models/user_model.dart';
 
-class AuthService extends ChangeNotifier {
+class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   User? _currentUser;
   bool _isAuthenticated = false;
@@ -14,8 +14,6 @@ class AuthService extends ChangeNotifier {
 
   Future<void> initialize() async {
     _isLoading = true;
-    notifyListeners();
-
     try {
       final prefs = await SharedPreferences.getInstance();
       final userData = prefs.getString('user');
@@ -28,7 +26,6 @@ class AuthService extends ChangeNotifier {
       debugPrint('Error initializing auth service: $e');
     } finally {
       _isLoading = false;
-      notifyListeners();
     }
   }
 

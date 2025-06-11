@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:responsive_admin_panel_flutter/domain/usecases/auth_service.dart';
+import 'package:responsive_admin_panel_flutter/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/presentation/widgets/dashboard_card.dart';
 import 'package:responsive_admin_panel_flutter/data/models/user_model.dart';
 
@@ -31,7 +31,7 @@ class _DashboardPageState extends State<DashboardPage> {
   /// is hidden when the user scrolls down and is visible when the user scrolls up.
   ///
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context);
+    final authService = Provider.of<AuthProvider>(context);
     final user = authService.currentUser;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -221,7 +221,7 @@ class _DashboardPageState extends State<DashboardPage> {
             title: const Text('Sign Out'),
             onTap: () async {
               Navigator.pop(context);
-              await Provider.of<AuthService>(context, listen: false).signOut();
+              await Provider.of<AuthProvider>(context, listen: false).signOut();
               Navigator.pushReplacementNamed(context, '/');
             },
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:responsive_admin_panel_flutter/domain/usecases/auth_service.dart';
+import 'package:responsive_admin_panel_flutter/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/presentation/widgets/custom_button.dart';
 import 'package:responsive_admin_panel_flutter/presentation/widgets/custom_text_field.dart';
 
@@ -69,7 +69,7 @@ class _SignInPageState extends State<SignInPage> {
 
   Future<void> _signIn() async {
     if (_formKey.currentState!.validate()) {
-      final authService = Provider.of<AuthService>(context, listen: false);
+      final authService = Provider.of<AuthProvider>(context, listen: false);
       final success = await authService.signIn(
         _emailController.text.trim(),
         _passwordController.text,
@@ -103,7 +103,7 @@ class _SignInPageState extends State<SignInPage> {
   /// state and handle sign-in logic. It also adapts the UI to the current
   /// theme, supporting light and dark modes.
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context);
+    final authService = Provider.of<AuthProvider>(context);
     final isLoading = authService.isLoading;
     final size = MediaQuery.of(context).size;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;

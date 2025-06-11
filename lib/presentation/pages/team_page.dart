@@ -3,22 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_admin_panel_flutter/data/models/team_model.dart';
 import 'package:responsive_admin_panel_flutter/data/models/user_model.dart';
-import 'package:responsive_admin_panel_flutter/domain/usecases/auth_service.dart';
-import 'package:responsive_admin_panel_flutter/domain/usecases/team_service.dart';
+import 'package:responsive_admin_panel_flutter/presentation/providers/auth_provider.dart';
+import 'package:responsive_admin_panel_flutter/presentation/providers/team_provider.dart';
 import 'package:responsive_admin_panel_flutter/presentation/widgets/custom_paginated_data_table.dart';
 
 class TeamPage extends StatefulWidget {
   const TeamPage({super.key});
 
   @override
+  /// Creates the mutable state for the `TeamPage` widget.
+  ///
+  /// Returns an instance of `_TeamState`, where the build logic
+  /// and state management for the `TeamPage` is implemented.
+  ///
+  /// This method is called when the `TeamPage` is inserted into
+  /// the widget tree and is responsible for creating the state
+  /// object that persists throughout the lifecycle of the widget.
   _TeamState createState() => _TeamState();
 }
 
-class _TeamState extends State<Team> {
+class _TeamState extends State<TeamPage> {
   @override
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context);
-    final teamService = Provider.of<TeamService>(context);
+    final authService = Provider.of<AuthProvider>(context);
+    final teamService = Provider.of<TeamProvider>(context);
     final user = authService.currentUser;
     final team = teamService;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -186,7 +194,7 @@ class _TeamState extends State<Team> {
             title: const Text('Sign Out'),
             onTap: () async {
               Navigator.pop(context);
-              await Provider.of<AuthService>(context, listen: false).signOut();
+              await Provider.of<AuthProvider>(context, listen: false).signOut();
               Navigator.pushReplacementNamed(context, '/');
             },
           ),
