@@ -1,39 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:responsive_admin_panel_flutter/services/auth_service.dart';
-import 'config/theme.dart';
-import 'screens/sign_in_screen.dart';
-import 'screens/dashboard_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'injection_container.dart' as di;
+import 'core/constants/app_constants.dart';
+import 'core/theme/app_theme.dart';
+import 'presentation/providers/theme_provider.dart';
+import 'presentation/routes/app_router.dart';
+import 'presentation/routes/route_names.dart';
 
-void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider<AuthService>(
-          create: (_) => AuthService(),
-        ),
-      ],
-      child: MyApp(),
-    ),
-  );
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  // await Firebase.initializeApp();
+
+  // Initialize dependency injection
+  // await di.init();
+
+  // Initialize shared preferences
+  var prefs = await SharedPreferences.getInstance();
+
+  runApp(MyApp(prefs));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp(this.prefs, {super.key});
+
+  final SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Admin Panel',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SignInScreen(),
-        '/dashboard': (context) => const DashboardScreen(),
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider(prefs)),
+        // Add other providers here
+      ],
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: AppConstants.appName,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeProvider.themeMode,
+            initialRoute: RouteNames.splash,
+            onGenerateRoute: AppRouter.generateRoute,
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en', ''), // English
+              Locale('id', ''), // Indonesian
+            ],
+          );
+        },
+      ),
     );
   }
 }

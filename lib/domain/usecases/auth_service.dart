@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user_model.dart';
+import 'package:responsive_admin_panel_flutter/data/models/user_model.dart';
 
 class AuthService extends ChangeNotifier {
   bool _isLoading = false;

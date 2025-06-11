@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/auth_service.dart';
-import '../widgets/custom_text_field.dart';
-import '../widgets/custom_button.dart';
+import 'package:responsive_admin_panel_flutter/domain/usecases/auth_service.dart';
+import 'package:responsive_admin_panel_flutter/presentation/widgets/custom_button.dart';
+import 'package:responsive_admin_panel_flutter/presentation/widgets/custom_text_field.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
 
   @override
-  /// Creates the state of the `SignInScreen` widget.
+  /// Creates the state of the `SignInPage` widget.
   ///
-  /// Returns a `_SignInScreenState` object.
+  /// Returns a `_SignInPageState` object.
   ///
-  /// This function is called when the `SignInScreen` widget is inserted into the
+  /// This function is called when the `SignInPage` widget is inserted into the
   /// tree. It is responsible for creating the state object that will be used by
   /// the widget.
   ///
@@ -23,10 +23,10 @@ class SignInScreen extends StatefulWidget {
   /// The state object is also used to notify the parent widget when the state
   /// of the widget changes, such as when the user enters a new email address or
   /// password.
-  _SignInScreenState createState() => _SignInScreenState();
+  _SignInPageState createState() => _SignInPageState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -34,9 +34,9 @@ class _SignInScreenState extends State<SignInScreen> {
   bool _obscurePassword = true;
 
   @override
-  /// Initializes the state of the `SignInScreen` widget.
+  /// Initializes the state of the `SignInPage` widget.
   ///
-  /// This function is called when the `SignInScreen` widget is inserted into the
+  /// This function is called when the `SignInPage` widget is inserted into the
   /// tree. It is responsible for initializing the state of the widget, including
   /// setting the values of the form fields for demo purposes.
   ///

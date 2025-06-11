@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../services/auth_service.dart';
-import '../widgets/dashboard_card.dart';
-import '../models/user_model.dart';
+import 'package:responsive_admin_panel_flutter/domain/usecases/auth_service.dart';
+import 'package:responsive_admin_panel_flutter/presentation/widgets/dashboard_card.dart';
+import 'package:responsive_admin_panel_flutter/data/models/user_model.dart';
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
 
   @override
-  _DashboardScreenState createState() => _DashboardScreenState();
+  _DashboardPageState createState() => _DashboardPageState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardPageState extends State<DashboardPage> {
   int _selectedIndex = 0;
   final List<String> _months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   final List<double> _revenueData = [4.2, 7.8, 6.5, 9.5, 8.0, 10.8, 9.8, 12.5, 11.2, 14.8, 13.5, 16.2];
