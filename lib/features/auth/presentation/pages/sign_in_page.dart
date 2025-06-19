@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:responsive_admin_panel_flutter/features/shared/presentation/providers/auth_provider.dart';
+import 'package:responsive_admin_panel_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/custom_button.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/custom_text_field.dart';
 import 'package:go_router/go_router.dart';
@@ -76,7 +76,6 @@ class _SignInPageState extends State<SignInPage> {
         _emailController.text.trim(),
         _passwordController.text,
       );
-
       if (success && mounted) {
         context.go(RouteNames.dashboard);
       } else if (mounted) {
