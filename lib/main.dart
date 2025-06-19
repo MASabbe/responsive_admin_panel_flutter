@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:responsive_admin_panel_flutter/presentation/providers/auth_provider.dart';
-import 'package:responsive_admin_panel_flutter/presentation/providers/team_provider.dart';
+import 'package:responsive_admin_panel_flutter/features/shared/presentation/providers/auth_provider.dart';
+import 'package:responsive_admin_panel_flutter/features/shared/presentation/providers/team_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'injection_container.dart' as di;
+import 'package:firebase_core/firebase_core.dart';
+import 'injection.dart' as di;
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
-import 'presentation/providers/theme_provider.dart';
-import 'presentation/routes/app_router.dart';
-import 'presentation/routes/route_names.dart';
+import 'features/shared/presentation/providers/theme_provider.dart';
+import 'package:responsive_admin_panel_flutter/routes/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,14 +42,13 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
-          return MaterialApp(
+          return MaterialApp.router(
             debugShowCheckedModeBanner: false,
             title: AppConstants.appName,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: themeProvider.themeMode,
-            initialRoute: RouteNames.splash,
-            onGenerateRoute: AppRouter.generateRoute,
+            routerConfig: appRouter,
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -58,7 +56,6 @@ class MyApp extends StatelessWidget {
             ],
             supportedLocales: const [
               Locale('en', ''), // English
-              Locale('id', ''), // Indonesian
             ],
           );
         },
