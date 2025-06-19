@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:responsive_admin_panel_flutter/features/shared/presentation/providers/auth_provider.dart';
+import 'package:responsive_admin_panel_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/routes/route_names.dart';
 import 'package:go_router/go_router.dart';
 
