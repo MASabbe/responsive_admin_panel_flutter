@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:responsive_admin_panel_flutter/features/shared/presentation/providers/auth_provider.dart';
+import 'package:responsive_admin_panel_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/providers/team_provider.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/custom_paginated_data_table.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/app_drawer.dart';
