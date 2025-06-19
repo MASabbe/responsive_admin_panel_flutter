@@ -3,7 +3,7 @@ class AppConstants {
   static const String appVersion = '1.0.0';
   
   // API Endpoints
-  static const String baseUrl = 'https://api.example.com/v1';
+  static const String baseUrl = 'https://apimock.lazycatlabs.com/';
   
   // Shared Preferences Keys
   static const String themeKey = 'theme_mode';
