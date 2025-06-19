@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:responsive_admin_panel_flutter/features/shared/presentation/providers/auth_provider.dart';
+import 'package:responsive_admin_panel_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/dashboard_card.dart';
 import 'package:responsive_admin_panel_flutter/features/dashboard/data/models/user_model.dart';
 import 'package:go_router/go_router.dart';
@@ -382,220 +382,221 @@ class _DashboardPageState extends State<DashboardPage> {
         SizedBox(
           height: 200,
           width: double.infinity,
-          // child: ListView.separated(
-          //   shrinkWrap: true,
-          //   physics: const NeverScrollableScrollPhysics(),
-          //   itemCount: 4,
-          //   separatorBuilder: (context, index) => const SizedBox(height: 16.0),
-          //   itemBuilder: (context, index) {
-          //     // Sample project data
-          //     final List<Map<String, dynamic>> projects = [
-          //       {
-          //         'name': 'E-commerce App Redesign',
-          //         'deadline': 'May 12, 2025',
-          //         'progress': 0.75,
-          //         'status': 'In Progress',
-          //         'statusColor': Colors.orange,
-          //         'members': 4,
-          //       },
-          //       {
-          //         'name': 'Finance Dashboard',
-          //         'deadline': 'May 25, 2025',
-          //         'progress': 0.45,
-          //         'status': 'In Progress',
-          //         'statusColor': Colors.orange,
-          //         'members': 3,
-          //       },
-          //       {
-          //         'name': 'Social Media App',
-          //         'deadline': 'May 30, 2025',
-          //         'progress': 0.20,
-          //         'status': 'Just Started',
-          //         'statusColor': Colors.blue,
-          //         'members': 5,
-          //       },
-          //       {
-          //         'name': 'Travel Booking Platform',
-          //         'deadline': 'May 05, 2025',
-          //         'progress': 1.0,
-          //         'status': 'Completed',
-          //         'statusColor': Colors.green,
-          //         'members': 2,
-          //       },
-          //     ];
-          //
-          //     final project = projects[index];
-          //
-          //     return Container(
-          //       padding: const EdgeInsets.all(16.0),
-          //       decoration: BoxDecoration(
-          //         color: Theme.of(context).cardColor,
-          //         borderRadius: BorderRadius.circular(16.0),
-          //         boxShadow: [
-          //           BoxShadow(
-          //             color: Colors.black.withValues(0.05),
-          //             blurRadius: 10,
-          //             offset: const Offset(0, 5),
-          //           ),
-          //         ],
-          //       ),
-          //       child: Column(
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: [
-          //           Row(
-          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //             children: [
-          //               Expanded(
-          //                 child: Text(
-          //                   project['name'],
-          //                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-          //                     fontWeight: FontWeight.bold,
-          //                   ),
-          //                   overflow: TextOverflow.ellipsis,
-          //                 ),
-          //               ),
-          //               Container(
-          //                 padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-          //                 decoration: BoxDecoration(
-          //                   color: project['statusColor'].withValues(0.1),
-          //                   borderRadius: BorderRadius.circular(20.0),
-          //                 ),
-          //                 child: Text(
-          //                   project['status'],
-          //                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-          //                     color: project['statusColor'],
-          //                     fontWeight: FontWeight.bold,
-          //                   ),
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //           const SizedBox(height: 16.0),
-          //           Row(
-          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //             children: [
-          //               Column(
-          //                 crossAxisAlignment: CrossAxisAlignment.start,
-          //                 children: [
-          //                   Text(
-          //                     'Deadline',
-          //                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-          //                       color: Theme.of(context).textTheme.bodySmall!.color!.withValues(0.7),
-          //                     ),
-          //                   ),
-          //                   const SizedBox(height: 4.0),
-          //                   Text(
-          //                     project['deadline'],
-          //                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-          //                       fontWeight: FontWeight.w500,
-          //                     ),
-          //                   ),
-          //                 ],
-          //               ),
-          //               Row(
-          //                 children: [
-          //                   SizedBox(
-          //                     width: 80,
-          //                     child: Stack(
-          //                       children: List.generate(
-          //                         3,
-          //                             (i) => Positioned(
-          //                           left: i * 20.0,
-          //                           child: Container(
-          //                             decoration: BoxDecoration(
-          //                               border: Border.all(
-          //                                 color: Theme.of(context).scaffoldBackgroundColor,
-          //                                 width: 2.0,
-          //                               ),
-          //                               shape: BoxShape.circle,
-          //                             ),
-          //                             child: CircleAvatar(
-          //                               radius: 13,
-          //                               backgroundImage: NetworkImage(
-          //                                 'https://ui-avatars.com/api/?name=User${i + 1}&background=random',
-          //                               ),
-          //                             ),
-          //                           ),
-          //                         ),
-          //                       ).toList()..add(
-          //                         Positioned(
-          //                           left: 3 * 20.0,
-          //                           child: Container(
-          //                             height: 30,
-          //                             width: 30,
-          //                             decoration: BoxDecoration(
-          //                               color: Theme.of(context).primaryColor.withValues(0.2),
-          //                               shape: BoxShape.circle,
-          //                               border: Border.all(
-          //                                 color: Theme.of(context).scaffoldBackgroundColor,
-          //                                 width: 2.0,
-          //                               ),
-          //                             ),
-          //                             child: Center(
-          //                               child: Text(
-          //                                 '+${project['members'] - 3}',
-          //                                 style: TextStyle(
-          //                                   fontSize: 12,
-          //                                   color: Theme.of(context).primaryColor,
-          //                                   fontWeight: FontWeight.bold,
-          //                                 ),
-          //                               ),
-          //                             ),
-          //                           ),
-          //                         ),
-          //                       ),
-          //                     ),
-          //                   ),
-          //                 ],
-          //               ),
-          //             ],
-          //           ),
-          //           const SizedBox(height: 16.0),
-          //           Row(
-          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //             children: [
-          //               Expanded(
-          //                 child: Column(
-          //                   crossAxisAlignment: CrossAxisAlignment.start,
-          //                   children: [
-          //                     Text(
-          //                       'Progress',
-          //                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
-          //                         color: Theme.of(context).textTheme.bodySmall!.color!.withValues(0.7),
-          //                       ),
-          //                     ),
-          //                     const SizedBox(height: 8.0),
-          //                     LinearProgressIndicator(
-          //                       value: project['progress'],
-          //                       backgroundColor: Theme.of(context).dividerColor.withValues(0.1),
-          //                       valueColor: AlwaysStoppedAnimation<Color>(
-          //                         project['progress'] == 1.0
-          //                             ? Colors.green
-          //                             : Theme.of(context).primaryColor,
-          //                       ),
-          //                       borderRadius: BorderRadius.circular(6.0),
-          //                       minHeight: 8.0,
-          //                     ),
-          //                   ],
-          //                 ),
-          //               ),
-          //               const SizedBox(width: 16.0),
-          //               Text(
-          //                 '${(project['progress'] * 100).toInt()}%',
-          //                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-          //                   fontWeight: FontWeight.bold,
-          //                   color: project['progress'] == 1.0
-          //                       ? Colors.green
-          //                       : Theme.of(context).primaryColor,
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //         ],
-          //       ),
-          //     );
-          //   },
-          // ),
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 4,
+            separatorBuilder: (context, index) => const SizedBox(height: 16.0),
+            itemBuilder: (context, index) {
+              // Sample project data
+              final List<Map<String, dynamic>> projects = [
+                {
+                  'name': 'E-commerce App Redesign',
+                  'deadline': 'May 12, 2025',
+                  'progress': 0.75,
+                  'status': 'In Progress',
+                  'statusColor': Colors.orange,
+                  'members': 4,
+                },
+                {
+                  'name': 'Finance Dashboard',
+                  'deadline': 'May 25, 2025',
+                  'progress': 0.45,
+                  'status': 'In Progress',
+                  'statusColor': Colors.orange,
+                  'members': 3,
+                },
+                {
+                  'name': 'Social Media App',
+                  'deadline': 'May 30, 2025',
+                  'progress': 0.20,
+                  'status': 'Just Started',
+                  'statusColor': Colors.blue,
+                  'members': 5,
+                },
+                {
+                  'name': 'Travel Booking Platform',
+                  'deadline': 'May 05, 2025',
+                  'progress': 1.0,
+                  'status': 'Completed',
+                  'statusColor': Colors.green,
+                  'members': 2,
+                },
+              ];
+
+              final project = projects[index];
+
+              return Container(
+                height: 120, // Added fixed height to ensure finite constraints
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(16.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            project['name'],
+                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                          decoration: BoxDecoration(
+                            color: project['statusColor'].withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: Text(
+                            project['status'],
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              color: project['statusColor'],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Deadline',
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                color: Theme.of(context).textTheme.bodySmall!.color!.withValues(alpha: 0.7),
+                              ),
+                            ),
+                            const SizedBox(height: 4.0),
+                            Text(
+                              project['deadline'],
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 80,
+                              child: Stack(
+                                children: List.generate(
+                                  3,
+                                      (i) => Positioned(
+                                    left: i * 20.0,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                          width: 2.0,
+                                        ),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: CircleAvatar(
+                                        radius: 13,
+                                        backgroundImage: NetworkImage(
+                                          'https://ui-avatars.com/api/?name=User${i + 1}&background=random',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ).toList()..add(
+                                  Positioned(
+                                    left: 3 * 20.0,
+                                    child: Container(
+                                      height: 30,
+                                      width: 30,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                          width: 2.0,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          '+${project['members'] - 3}',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Theme.of(context).primaryColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Progress',
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                  color: Theme.of(context).textTheme.bodySmall!.color!.withValues(alpha: 0.7),
+                                ),
+                              ),
+                              const SizedBox(height: 8.0),
+                              LinearProgressIndicator(
+                                value: project['progress'],
+                                backgroundColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  project['progress'] == 1.0
+                                      ? Colors.green
+                                      : Theme.of(context).primaryColor,
+                                ),
+                                borderRadius: BorderRadius.circular(6.0),
+                                minHeight: 8.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16.0),
+                        Text(
+                          '${(project['progress'] * 100).toInt()}%',
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: project['progress'] == 1.0
+                                ? Colors.green
+                                : Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -666,6 +667,7 @@ class _DashboardPageState extends State<DashboardPage> {
             final task = tasks[index];
 
             return Container(
+              height: 120, // Added fixed height to ensure finite constraints
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
@@ -739,7 +741,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 vertical: 2.0,
                               ),
                               decoration: BoxDecoration(
-                                color: task['priorityColor'].withOpacity(0.1),
+                                color: task['priorityColor'].withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4.0),
                               ),
                               child: Text(
