@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:responsive_admin_panel_flutter/features/dashboard/data/models/user_model.dart' as model;
+import 'package:responsive_admin_panel_flutter/features/dashboard/data/models/user_model.dart'
+    as model;
+import 'package:dio/dio.dart';
+import 'package:responsive_admin_panel_flutter/core/constants/app_constants.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
@@ -9,7 +12,9 @@ class AuthProvider extends ChangeNotifier {
   bool _isAuthenticated = false;
 
   bool get isLoading => _isLoading;
+
   model.User? get currentUser => _currentUser;
+
   bool get isAuthenticated => _isAuthenticated;
 
   Future<void> initialize() async {
@@ -43,31 +48,33 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> signIn(String email, String password) async {
     _isLoading = true;
     notifyListeners();
-
     try {
-      // Simulasi panggilan API dengan delay
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Di implementasi nyata, Anda akan mengganti ini dengan panggilan API
-      if (email == 'demo@example.com' && password == 'password') {
+      final dio = Dio();
+      final response = await dio.post(
+        '${AppConstants.baseUrl}v1/api/auth/login',
+        data: {
+          'email': email,
+          'password': password,
+          'deviceInfo': 'deviceInfo',
+          'osInfo': 'osInfo',
+          'fcmToken': 'fcmToken',
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+      if (response.statusCode == 200 && response.data != null) {
         final user = model.User(
-          id: '123',
-          name: 'Demo User',
-          email: email,
-          avatarUrl: 'https://ui-avatars.com/api/?name=Demo+User&background=random',
-          role: 'Admin',
+          id: response.data['data']['id']?.toString() ?? '',
+          name: response.data['data']['name'] ?? '',
+          email: response.data['data']['email'] ?? '',
+          avatarUrl: response.data['data']['avatarUrl'] ?? '',
+          role: response.data['data']['role'] ?? '',
         );
-
         _currentUser = user;
         _isAuthenticated = true;
-
-        // Simpan data user
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user', jsonEncode(user.toJson()));
-
         return true;
       }
-
       return false;
     } catch (e) {
       debugPrint('Error signing in: $e');
