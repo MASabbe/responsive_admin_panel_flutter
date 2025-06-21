@@ -25,9 +25,7 @@ class _UserState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthProvider>(context);
-    final teamService = Provider.of<TeamProvider>(context);
     final user = authService.currentUser;
-    final team = teamService;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

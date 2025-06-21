@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:responsive_admin_panel_flutter/core/constants/app_constants.dart';
 
 class ThemeProvider with ChangeNotifier {
   late ThemeMode _themeMode;

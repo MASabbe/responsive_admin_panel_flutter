@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:responsive_admin_panel_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/dashboard_card.dart';
-import 'package:responsive_admin_panel_flutter/features/dashboard/data/models/user_model.dart';
-import 'package:go_router/go_router.dart';
 import 'package:responsive_admin_panel_flutter/routes/route_names.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/app_drawer.dart';
 
@@ -497,6 +495,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           children: [
                             SizedBox(
                               width: 80,
+                              height: 40,
                               child: Stack(
                                 children: List.generate(
                                   3,
