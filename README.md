@@ -69,6 +69,20 @@ This boilerplate comes pre-configured with essential features for modern applica
     flutter run
     ```
 
+## 🖼️ Screenshots
+
+Berikut adalah tampilan aplikasi Responsive Admin Panel Flutter:
+
+<p align="center">
+  <img src="Screenshot_2025_07_11_03_49_57_201_com_example_responsive_admin.jpg" alt="Screenshot 1" width="350">
+  <img src="Screenshot_2025_07_11_03_50_28_699_com_example_responsive_admin.jpg" alt="Screenshot 2" width="350">
+  <img src="Screenshot_2025_07_11_03_50_48_702_com_example_responsive_admin.jpg" alt="Screenshot 3" width="350">
+  <img src="Screenshot_2025_07_11_03_50_53_438_com_example_responsive_admin.jpg" alt="Screenshot 4" width="350">
+  <img src="Screenshot_2025_07_11_03_51_03_108_com_example_responsive_admin.jpg" alt="Screenshot 5" width="350">
+  <img src="Screenshot_2025_07_11_03_51_06_338_com_example_responsive_admin.jpg" alt="Screenshot 6" width="350">
+  <img src="Screenshot_2025_07_11_03_51_15_543_com_example_responsive_admin.jpg" alt="Screenshot 7" width="350">
+</p>
+
 ## 🏗️ Project Structure Explained
 
 The project follows a feature-first, layer-based Clean Architecture.
