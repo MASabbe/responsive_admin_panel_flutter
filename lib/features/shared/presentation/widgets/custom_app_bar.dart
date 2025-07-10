@@ -37,21 +37,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             builder: (context, auth, child) {
               final user = auth.currentUser;
               final avatarUrl = user?.avatarUrl;
+
               return CircleAvatar(
                 radius: 18.0,
-                child: avatarUrl != null && avatarUrl.isNotEmpty
-                    ? ClipOval(
-                        child: Image.network(
-                          avatarUrl,
-                          fit: BoxFit.cover,
-                          width: 90,
-                          height: 90,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(Icons.person, size: 30);
-                          },
-                        ),
-                      )
-                    : const Icon(Icons.person, size: 30),
+                backgroundImage: (avatarUrl != null && avatarUrl.isNotEmpty) 
+                    ? NetworkImage(avatarUrl) 
+                    : null,
+                child: (avatarUrl == null || avatarUrl.isEmpty) 
+                    ? const Icon(Icons.person, size: 24) 
+                    : null,
               );
             },
           ),

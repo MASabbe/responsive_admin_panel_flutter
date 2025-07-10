@@ -1,8 +1,8 @@
 class RouteNames {
-  static const String splash = '/';
+  static const String splash = '/splash';
   static const String login = '/login';
   static const String signup = '/signup';
-  static const String dashboard = '/dashboard';
+  static const String dashboard = '/';
   static const String users = '/users';
   static const String profile = '/profile';
   static const String editProfile = '/profile/edit'; // Sub-route of profile

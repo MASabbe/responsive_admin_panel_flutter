@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:responsive_admin_panel_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/providers/drawer_provider.dart';
 import 'package:responsive_admin_panel_flutter/features/user/domain/entities/user_entity.dart';
+import 'package:responsive_admin_panel_flutter/routes/route_names.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -27,7 +28,7 @@ class AppDrawer extends StatelessWidget {
                 isSelected: drawerProvider.selectedIndex == 0,
                 onTap: () {
                   drawerProvider.setIndex(0);
-                  GoRouter.of(context).go('/dashboard');
+                  GoRouter.of(context).go(RouteNames.dashboard);
                 },
               ),
               _createDrawerItem(
@@ -36,7 +37,7 @@ class AppDrawer extends StatelessWidget {
                 isSelected: drawerProvider.selectedIndex == 1,
                 onTap: () {
                   drawerProvider.setIndex(1);
-                  GoRouter.of(context).go('/dashboard/users');
+                  GoRouter.of(context).go(RouteNames.users);
                 },
               ),
               _createDrawerItem(
@@ -45,7 +46,7 @@ class AppDrawer extends StatelessWidget {
                 isSelected: drawerProvider.selectedIndex == 2,
                 onTap: () {
                   drawerProvider.setIndex(2);
-                  GoRouter.of(context).go('/dashboard/profile');
+                  GoRouter.of(context).go(RouteNames.profile);
                 },
               ),
               const Divider(),

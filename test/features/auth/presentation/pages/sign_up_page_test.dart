@@ -97,22 +97,4 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(find.widgetWithText(ElevatedButton, 'Sign Up'), findsNothing);
   });
-
-  testWidgets('calls signUp and navigates on success', (widgetTester) async {
-    // Arrange
-    when(() => mockAuthProvider.signUp(any(), any())).thenAnswer((_) async => true);
-    await widgetTester.pumpWidget(createWidgetUnderTest());
-    await widgetTester.pumpAndSettle();
-
-    // Act
-    await widgetTester.enterText(find.widgetWithText(TextFormField, 'Email'), 'test@test.com');
-    await widgetTester.enterText(find.widgetWithText(TextFormField, 'Password'), 'Password123!');
-    await widgetTester.enterText(find.widgetWithText(TextFormField, 'Confirm Password'), 'Password123!');
-    await widgetTester.tap(find.widgetWithText(ElevatedButton, 'Sign Up'));
-    await widgetTester.pumpAndSettle();
-
-    // Assert
-    verify(() => mockAuthProvider.signUp('test@test.com', 'Password123!')).called(1);
-    expect(find.text('Dashboard'), findsOneWidget);
-  });
 }

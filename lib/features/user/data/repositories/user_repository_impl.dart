@@ -8,6 +8,15 @@ class UserRepositoryImpl implements UserRepository {
 
   UserRepositoryImpl(this._firestore);
 
+  String? _getValidAvatarUrl(String? url) {
+    if (url == null || url.isEmpty) return null;
+    final uri = Uri.tryParse(url);
+    if (uri != null && (uri.isScheme('http') || uri.isScheme('https'))) {
+      return url;
+    }
+    return null;
+  }
+
   @override
   Future<UserListResult> getUsers({required int limit, DocumentSnapshot? startAfter}) async {
     Query query = _firestore.collection('users').orderBy('email').limit(limit);
@@ -19,7 +28,13 @@ class UserRepositoryImpl implements UserRepository {
     final querySnapshot = await query.get();
     final users = querySnapshot.docs.map((doc) {
       final data = doc.data() as Map<String, dynamic>;
-      return UserEntity.fromMap(doc.id, data);
+      return UserEntity(
+        id: doc.id,
+        name: data['name'],
+        email: data['email'],
+        role: data['role'],
+        avatarUrl: _getValidAvatarUrl(data['avatarUrl']),
+      );
     }).toList();
 
     return UserListResult(
@@ -30,15 +45,14 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<UserEntity> getUser(String userId) async {
-    // In a real application, this would make a network request.
-    // For this boilerplate, we return a dummy user.
-    await Future.delayed(const Duration(milliseconds: 300)); // Simulate network delay
+    final doc = await _firestore.collection('users').doc(userId).get();
+    final data = doc.data() as Map<String, dynamic>;
     return UserEntity(
-      id: userId,
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      avatarUrl: 'https://i.pravatar.cc/150?u=$userId',
-      role: 'Admin',
+      id: doc.id,
+      name: data['name'],
+      email: data['email'],
+      role: data['role'],
+      avatarUrl: _getValidAvatarUrl(data['avatarUrl']),
     );
   }
 }

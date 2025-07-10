@@ -12,15 +12,18 @@ class UserProvider with ChangeNotifier {
   bool _isLoading = false;
   bool _hasMore = true;
   DocumentSnapshot? _lastDocument;
+  String? _errorMessage;
 
   List<UserEntity> get users => _users;
   bool get isLoading => _isLoading;
   bool get hasMore => _hasMore;
+  String? get errorMessage => _errorMessage;
 
   Future<void> fetchUsers({int limit = 10}) async {
     if (_isLoading || !_hasMore) return;
 
     _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
 
     try {
@@ -29,9 +32,9 @@ class UserProvider with ChangeNotifier {
       _lastDocument = result.lastDocument;
       _hasMore = result.users.length == limit;
     } catch (e) {
-      // Handle error
+      _errorMessage = 'Error fetching users: $e';
       if (kDebugMode) {
-        print('Error fetching users: $e');
+        print(_errorMessage);
       }
     } finally {
       _isLoading = false;
@@ -44,6 +47,7 @@ class UserProvider with ChangeNotifier {
     _isLoading = false;
     _hasMore = true;
     _lastDocument = null;
+    _errorMessage = null;
     notifyListeners();
   }
 }

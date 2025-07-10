@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:responsive_admin_panel_flutter/features/auth/domain/use_cases/get_auth_status_stream_use_case.dart';
 import 'package:responsive_admin_panel_flutter/features/auth/domain/use_cases/sign_in_use_case.dart';
 import 'package:responsive_admin_panel_flutter/features/auth/domain/use_cases/sign_out_use_case.dart';
@@ -40,59 +40,87 @@ class AuthProvider with ChangeNotifier {
   bool get isAuthenticated => _currentUser != null;
   String? get errorMessage => _errorMessage;
 
+  String? _getValidAvatarUrl(String? url) {
+    if (url == null || url.isEmpty) return null;
+    final uri = Uri.tryParse(url);
+    if (uri != null && (uri.isScheme('http') || uri.isScheme('https'))) {
+      return url;
+    }
+    return null;
+  }
+
+  void _onAuthChanged(UserEntity? user) {
+    //TODO: Tak tambahin check user id di sini
+    //Check if the user is authenticated and has a valid ID before updating the state.
+    if (user != null && user.id.isNotEmpty) {
+      final validAvatarUrl = _getValidAvatarUrl(user.avatarUrl);
+      _currentUser = UserEntity(
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatarUrl: validAvatarUrl,
+      );
+    } else {
+      _currentUser = null;
+    }
+    notifyListeners();
+  }
+
   Future<void> _initializeApp() async {
     // Sign out any existing user to ensure a clean state on initialization.
-    await signOut();
     // Now, start listening for authentication changes.
     _listenToAuthChanges();
+    Timer(const Duration(seconds: 2), () {
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 
   void _listenToAuthChanges() {
-    _authSubscription = _getAuthStatusStreamUseCase().listen((user) {
-      _currentUser = user;
-      if (_isLoading) {
-        _isLoading = false;
-      }
-      notifyListeners();
-    });
+    _authSubscription = _getAuthStatusStreamUseCase().listen(_onAuthChanged);
   }
 
   Future<bool> signIn(String email, String password) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
-
     try {
-      _currentUser = await _signInUseCase(email, password);
+      await _signInUseCase(email, password);
+      _isLoading = false;
+      notifyListeners();
       return true;
+    } on FirebaseAuthException catch (e) {
+      _errorMessage = e.message;
     } catch (e) {
-      _errorMessage = e.toString();
-      return false;
-    } finally {
-      if (mounted) {
-        _isLoading = false;
-        notifyListeners();
-      }
+      _errorMessage = 'An unknown error occurred.';
     }
+    _isLoading = false;
+    notifyListeners();
+    return false;
   }
 
-  Future<bool> signUp(String email, String password) async {
+  Future<bool> signUp(
+      String email, String password, String name, File? avatar) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
-
     try {
-      _currentUser = await _signUpUseCase(email, password);
+      // Only pass email and password to signUpUseCase
+      await _signUpUseCase(email, password);
+      // After sign up, update the user profile with name, email and avatar
+      await _updateUserProfileUseCase(name, email, avatar);
+      _isLoading = false;
+      notifyListeners();
       return true;
+    } on FirebaseAuthException catch (e) {
+      _errorMessage = e.message;
     } catch (e) {
-      _errorMessage = e.toString();
-      return false;
-    } finally {
-      if (mounted) {
-        _isLoading = false;
-        notifyListeners();
-      }
+      _errorMessage = 'An unknown error occurred.';
     }
+    _isLoading = false;
+    notifyListeners();
+    return false;
   }
 
   Future<void> signOut() async {
@@ -103,8 +131,10 @@ class AuthProvider with ChangeNotifier {
     try {
       await _signOutUseCase();
       _currentUser = null; // Explicitly set user to null on sign out
+    } on FirebaseAuthException catch (e) {
+      _errorMessage = e.message;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = 'An unknown error occurred.';
     } finally {
       if (mounted) {
         _isLoading = false;
@@ -113,15 +143,17 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateUserProfile(String name, File? image) async {
+  Future<void> updateUserProfile(String email, String name, File? image) async {
     _isLoading = true;
     notifyListeners();
     try {
-      await _updateUserProfileUseCase(name, image);
+      await _updateUserProfileUseCase(name, email,image);
       // The auth stream will automatically provide the updated user data.
       _errorMessage = null;
+    } on FirebaseAuthException catch (e) {
+      _errorMessage = e.message;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = 'An unknown error occurred.';
     } finally {
       if (mounted) {
         _isLoading = false;

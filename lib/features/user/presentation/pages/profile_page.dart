@@ -36,10 +36,10 @@ class ProfilePage extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 60,
-                  backgroundImage: (user?.avatarUrl?.isNotEmpty ?? false)
-                      ? NetworkImage(user!.avatarUrl!)
+                  backgroundImage: (user?.avatarUrl != null && user!.avatarUrl!.isNotEmpty)
+                      ? NetworkImage(user!.avatarUrl!) as ImageProvider
                       : null,
-                  child: (user?.avatarUrl?.isEmpty ?? true)
+                  child: (user?.avatarUrl == null || user!.avatarUrl!.isEmpty)
                       ? const Icon(Icons.person_outline, size: 60)
                       : null,
                 ),

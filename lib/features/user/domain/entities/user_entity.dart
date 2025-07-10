@@ -22,4 +22,9 @@ class UserEntity {
       role: data['role'],
     );
   }
+
+  @override
+  String toString() {
+    return 'UserEntity{id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, role: $role}';
+  }
 }

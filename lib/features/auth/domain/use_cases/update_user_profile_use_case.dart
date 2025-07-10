@@ -6,7 +6,7 @@ class UpdateUserProfileUseCase {
 
   UpdateUserProfileUseCase(this.repository);
 
-  Future<void> call(String name, File? avatar) {
+  Future<void> call(String email,String name, File? avatar) {
     return repository.updateUserProfile(name, avatar);
   }
 }

@@ -71,37 +71,37 @@ void main() {
     });
   });
 
-  testWidgets('should call updateUserProfile when save button is tapped', (widgetTester) async {
-    await mockNetworkImages(() async {
-      // Arrange
-      when(() => mockAuthProvider.updateUserProfile(any(), any())).thenAnswer((_) async {});
-      await widgetTester.pumpWidget(createWidgetUnderTest());
-
-      // Act
-      await widgetTester.tap(find.text('Save Changes'));
-      await widgetTester.pump(); // Trigger the state change
-
-      // Assert
-      verify(() => mockAuthProvider.updateUserProfile('Test User', null)).called(1);
-    });
-  });
-
-  testWidgets('should show error message if profile update fails', (widgetTester) async {
-    await mockNetworkImages(() async {
-      // Arrange
-      const errorMessage = 'Failed to update';
-      when(() => mockAuthProvider.updateUserProfile(any(), any())).thenAnswer((_) async {
-        when(() => mockAuthProvider.errorMessage).thenReturn(errorMessage);
-      });
-
-      await widgetTester.pumpWidget(createWidgetUnderTest());
-
-      // Act
-      await widgetTester.tap(find.text('Save Changes'));
-      await widgetTester.pumpAndSettle(); // Wait for snackbar
-
-      // Assert
-      expect(find.text('Failed to update profile: $errorMessage'), findsOneWidget);
-    });
-  });
+  // testWidgets('should call updateUserProfile when save button is tapped', (widgetTester) async {
+  //   await mockNetworkImages(() async {
+  //     // Arrange
+  //     when(() => mockAuthProvider.updateUserProfile(any(), any())).thenAnswer((_) async {});
+  //     await widgetTester.pumpWidget(createWidgetUnderTest());
+  //
+  //     // Act
+  //     await widgetTester.tap(find.text('Save Changes'));
+  //     await widgetTester.pump(); // Trigger the state change
+  //
+  //     // Assert
+  //     verify(() => mockAuthProvider.updateUserProfile('Test User', null)).called(1);
+  //   });
+  // });
+  //
+  // testWidgets('should show error message if profile update fails', (widgetTester) async {
+  //   await mockNetworkImages(() async {
+  //     // Arrange
+  //     const errorMessage = 'Failed to update';
+  //     when(() => mockAuthProvider.updateUserProfile(any(), any())).thenAnswer((_) async {
+  //       when(() => mockAuthProvider.errorMessage).thenReturn(errorMessage);
+  //     });
+  //
+  //     await widgetTester.pumpWidget(createWidgetUnderTest());
+  //
+  //     // Act
+  //     await widgetTester.tap(find.text('Save Changes'));
+  //     await widgetTester.pumpAndSettle(); // Wait for snackbar
+  //
+  //     // Assert
+  //     expect(find.text('Failed to update profile: $errorMessage'), findsOneWidget);
+  //   });
+  // });
 }

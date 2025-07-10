@@ -92,17 +92,18 @@ class AuthRepositoryImpl implements AuthRepository {
     if (user == null) return;
 
     String? avatarUrl;
-    if (avatar != null) {
-      final storageRef = FirebaseStorage.instance.ref();
-      final avatarRef = storageRef.child('user_avatars/${user.uid}');
-      await avatarRef.putFile(avatar);
-      avatarUrl = await avatarRef.getDownloadURL();
-    }
+    // if (avatar != null) {
+    //   final storageRef = FirebaseStorage.instance.ref();
+    //   final avatarRef = storageRef.child('user_avatars/${user.uid}');
+    //   await avatarRef.putFile(avatar);
+    //   avatarUrl = await avatarRef.getDownloadURL();
+    // }
 
     await user.updateProfile(displayName: name, photoURL: avatarUrl ?? user.photoURL);
 
-    await _firestore.collection('users').doc(user.uid).update({
+    await _firestore.collection('users').doc(user.uid).set({
       'name': name,
+      'email': user.email,
       if (avatarUrl != null) 'avatarUrl': avatarUrl,
     });
   }

@@ -1,7 +1,10 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:responsive_admin_panel_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/routes/route_names.dart';
 
@@ -14,19 +17,35 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  File? _avatarFile;
+  Uint8List? _avatarBytes;
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    if (pickedFile != null) {
+      final bytes = await pickedFile.readAsBytes();
+      setState(() {
+        _avatarBytes = bytes;
+        _avatarFile = File(pickedFile.path);
+      });
+    }
   }
 
   Future<void> _signUp() async {
@@ -35,6 +54,8 @@ class _SignUpPageState extends State<SignUpPage> {
       final success = await authProvider.signUp(
         _emailController.text.trim(),
         _passwordController.text,
+        _nameController.text.trim(),
+        _avatarFile,
       );
       if (success && mounted) {
         context.go(RouteNames.dashboard);
@@ -107,6 +128,32 @@ class _SignUpPageState extends State<SignUpPage> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 40),
+                        Center(
+                          child: GestureDetector(
+                            onTap: _pickImage,
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.grey.shade200,
+                              backgroundImage: _avatarBytes != null
+                                  ? MemoryImage(_avatarBytes!)
+                                  : null,
+                              child: _avatarBytes == null
+                                  ? Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.grey.shade800,
+                                      size: 40,
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        TextFormField(
+                          controller: _nameController,
+                          decoration: const InputDecoration(labelText: 'Full Name', border: OutlineInputBorder()),
+                          validator: (value) => (value == null || value.isEmpty) ? 'Please enter your name' : null,
+                        ),
+                        const SizedBox(height: 20),
                         TextFormField(
                           controller: _emailController,
                           decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder()),

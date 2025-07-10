@@ -40,17 +40,17 @@ class AppRouter {
           builder: (context, state) => const DashboardPage(),
           routes: [
             GoRoute(
-              path: 'users',
+              path: RouteNames.users,
               name: RouteNames.users,
               builder: (context, state) => const AllUsersPage(),
             ),
             GoRoute(
-              path: 'profile',
+              path: RouteNames.profile,
               name: RouteNames.profile,
               builder: (context, state) => const ProfilePage(),
               routes: [
                 GoRoute(
-                  path: 'edit',
+                  path: RouteNames.editProfile,
                   name: RouteNames.editProfile,
                   builder: (context, state) => const EditProfilePage(),
                 ),

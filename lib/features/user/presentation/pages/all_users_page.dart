@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/custom_app_drawer.dart';
 import 'package:responsive_admin_panel_flutter/features/user/presentation/providers/user_provider.dart';
-import 'package:responsive_admin_panel_flutter/features/user/presentation/widgets/users_data_source.dart';
+import 'package:responsive_admin_panel_flutter/features/user/data/data_sources/users_data_source.dart';
 import 'package:responsive_admin_panel_flutter/injection.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/custom_app_bar.dart';
 
@@ -44,7 +44,7 @@ class _AllUsersPageState extends State<AllUsersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Dashboard'),
+      appBar: const CustomAppBar(title: 'Users'),
       drawer: const AppDrawer(),
       body: ChangeNotifierProvider.value(
         value: _userProvider,
@@ -52,6 +52,14 @@ class _AllUsersPageState extends State<AllUsersPage> {
           builder: (context, provider, child) {
             if (provider.isLoading && provider.users.isEmpty) {
               return const Center(child: CircularProgressIndicator());
+            }
+
+            if (provider.errorMessage != null) {
+              return Center(child: Text(provider.errorMessage!));
+            }
+
+            if (provider.users.isEmpty) {
+              return const Center(child: Text('No users found.'));
             }
 
             return SingleChildScrollView(

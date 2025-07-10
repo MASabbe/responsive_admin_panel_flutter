@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
+  Uint8List? _avatarBytes;
   File? _avatarFile;
   final ImagePicker _picker = ImagePicker();
 
@@ -35,15 +37,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
+      final bytes = await pickedFile.readAsBytes();
+      // Save to temp file
+      final tempDir = Directory.systemTemp;
+      final tempFile = await File('${tempDir.path}/avatar_${DateTime.now().millisecondsSinceEpoch}.png').writeAsBytes(bytes);
       setState(() {
-        _avatarFile = File(pickedFile.path);
+        _avatarBytes = bytes;
+        _avatarFile = tempFile;
       });
     }
   }
 
   Future<void> _saveProfile() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await authProvider.updateUserProfile(_nameController.text, _avatarFile);
+    await authProvider.updateUserProfile(_nameController.text, _emailController.text, _avatarFile);
 
     if (mounted) {
       if (authProvider.errorMessage == null) {
@@ -82,12 +89,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   children: [
                     CircleAvatar(
                       radius: 60,
-                      backgroundImage: _avatarFile != null
-                          ? FileImage(_avatarFile!)
+                      backgroundImage: _avatarBytes != null
+                          ? MemoryImage(_avatarBytes!)
                           : (avatarUrl != null && avatarUrl.isNotEmpty)
-                              ? NetworkImage(avatarUrl)
+                              ? NetworkImage(avatarUrl) as ImageProvider
                               : null,
-                      child: (_avatarFile == null && (avatarUrl == null || avatarUrl.isEmpty))
+                      child: (_avatarBytes == null && (avatarUrl == null || avatarUrl.isEmpty))
                           ? const Icon(Icons.person, size: 60)
                           : null,
                     ),
