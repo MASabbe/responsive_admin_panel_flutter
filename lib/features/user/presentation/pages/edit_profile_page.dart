@@ -105,8 +105,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         radius: 20,
                         backgroundColor: Theme.of(context).primaryColor,
                         child: IconButton(
-                          icon: const Icon(Icons.camera_alt, color: Colors.white, size: 20),
-                          onPressed: _pickImage,
+                          icon: const Icon(Icons.person, color: Colors.white, size: 20),
+                          onPressed: (){},
                         ),
                       ),
                     ),

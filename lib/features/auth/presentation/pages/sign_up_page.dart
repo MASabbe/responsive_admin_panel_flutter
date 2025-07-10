@@ -130,7 +130,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         const SizedBox(height: 40),
                         Center(
                           child: GestureDetector(
-                            onTap: _pickImage,
+                            // onTap: _pickImage,
                             child: CircleAvatar(
                               radius: 50,
                               backgroundColor: Colors.grey.shade200,
@@ -139,7 +139,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   : null,
                               child: _avatarBytes == null
                                   ? Icon(
-                                      Icons.camera_alt,
+                                      Icons.person,
                                       color: Colors.grey.shade800,
                                       size: 40,
                                     )
