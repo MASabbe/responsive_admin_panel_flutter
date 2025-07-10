@@ -23,15 +23,22 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 
+# IDEs and tools
+.idea/
+.dart_tool/
+.vscode/
+
+# Environment variables
+.env
+
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
-.dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+**/build/
 
 # Symbolication related
 app.*.symbols
@@ -49,4 +56,3 @@ firebase.json
 /ios/Runner/GoogleService-Info.plist
 /macos/Runner/GoogleService-Info.plist
 lib/firebase_options.dart
-

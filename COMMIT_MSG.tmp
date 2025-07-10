@@ -1,0 +1,16 @@
+feat(testing, auth): Add comprehensive Dashboard tests and refactor auth flow
+
+This commit introduces robust widget testing for the Dashboard and refactors the core authentication flow to ensure session integrity on startup.
+
+### Dashboard Widget Testing
+- Implemented a comprehensive widget test for `DashboardPage` to verify the correct rendering of all key UI components, including the header, dashboard cards, and section titles ("Revenue Overview", "Recent Projects", "Active Tasks").
+- Systematically resolved multiple test failures related to layout overflows (`RenderFlex`), ambiguous finders, and missing `ThemeProvider` in the test environment.
+- Addressed challenges with testing widgets inside a `CustomScrollView` by implementing a reliable, sequential scrolling and verification strategy, ensuring off-screen elements are correctly tested.
+
+### Authentication Flow Refactoring
+- Modified `AuthProvider` to automatically sign out any existing user upon application initialization. This change guarantees a clean session state on every app start, preventing issues with stale authentication data.
+- Introduced a `mounted` check within `AuthProvider` before calling `notifyListeners()` to prevent potential errors when the widget is disposed during an asynchronous operation.
+
+### Verification
+- All existing unit and widget tests (16 total) pass successfully, confirming that these changes have been integrated without introducing regressions.
+- A full analysis of the app's entry point (`main.dart`) and routing logic (`app_router.dart`) confirms that the new authentication flow is handled correctly.

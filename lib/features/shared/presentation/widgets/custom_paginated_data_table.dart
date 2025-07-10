@@ -57,12 +57,10 @@ class CustomPaginatedDataTable<T> extends StatefulWidget {
   });
 
   @override
-  _CustomPaginatedDataTableState<T> createState() =>
-      _CustomPaginatedDataTableState<T>();
+  State<CustomPaginatedDataTable<T>> createState() => _CustomPaginatedDataTableState<T>();
 }
 
-class _CustomPaginatedDataTableState<T>
-    extends State<CustomPaginatedDataTable<T>> {
+class _CustomPaginatedDataTableState<T> extends State<CustomPaginatedDataTable<T>> {
   late int _rowsPerPage;
   late int _currentPage;
   late bool _sortAscending;
@@ -115,13 +113,6 @@ class _CustomPaginatedDataTableState<T>
         _currentPage = 0; // Reset to first page when rows per page changes
       });
     }
-  }
-
-  void _handleSort(int columnIndex, bool ascending) {
-    setState(() {
-      _sortColumnIndex = columnIndex;
-      _sortAscending = ascending;
-    });
   }
 
   @override

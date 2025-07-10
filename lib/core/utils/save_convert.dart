@@ -1,4 +1,4 @@
-int toInt(value, {int defaultValue = 0}) {
+int? toInt(dynamic value, {int? defaultValue = 0}) {
   if (value == null) return defaultValue;
   if (value is int) return value;
   if (value is double) return value.toInt();
@@ -11,7 +11,7 @@ int toInt(value, {int defaultValue = 0}) {
   return defaultValue;
 }
 
-double toDouble(value, {double defaultValue = 0.0}) {
+double? toDouble(dynamic value, {double? defaultValue = 0.0}) {
   if (value == null) return defaultValue;
   if (value is double) return value;
   if (value is int) return value.toDouble();
@@ -20,7 +20,7 @@ double toDouble(value, {double defaultValue = 0.0}) {
   return defaultValue;
 }
 
-bool toBool(value, {bool defaultValue = false}) {
+bool? toBool(dynamic value, {bool? defaultValue = false}) {
   if (value == null) return defaultValue;
   if (value is bool) return value;
   if (value is int) return value == 0 ? false : true;
@@ -32,7 +32,7 @@ bool toBool(value, {bool defaultValue = false}) {
   return defaultValue;
 }
 
-String toString(value, {String defaultValue = ""}) {
+String? toString(dynamic value, {String? defaultValue = ""}) {
   if (value == null) return defaultValue;
   if (value is String) return value;
   if (value is int) return value.toString();
@@ -41,42 +41,42 @@ String toString(value, {String defaultValue = ""}) {
   return defaultValue;
 }
 
-Map<String, dynamic> toMap(value, {Map<String, dynamic>? defaultValue}) {
+Map<String, dynamic>? toMap(dynamic value, {Map<String, dynamic>? defaultValue}) {
   if (value == null) return defaultValue ?? <String, dynamic>{};
   if (value is Map<String, dynamic>) return value;
   return defaultValue ?? <String, dynamic>{};
 }
 
-List toList(value, {List? defaultValue}) {
+List? toList(dynamic value, {List? defaultValue}) {
   if (value == null) return defaultValue ?? [];
   if (value is List) return value;
   return defaultValue ?? [];
 }
 
-int asInt(Map<String, dynamic>? json, String key, {int defaultValue = 0}) {
+int? asInt(Map<String, dynamic>? json, String key, {int? defaultValue = 0}) {
   if (json == null || !json.containsKey(key)) return defaultValue;
   return toInt(json[key]);
 }
 
-double asDouble(Map<String, dynamic>? json, String key,
-    {double defaultValue = 0.0}) {
+double? asDouble(Map<String, dynamic>? json, String key,
+    {double? defaultValue = 0.0}) {
   if (json == null || !json.containsKey(key)) return defaultValue;
   return toDouble(json[key]);
 }
 
-bool asBool(Map<String, dynamic>? json, String key,
-    {bool defaultValue = false}) {
+bool? asBool(Map<String, dynamic>? json, String key,
+    {bool? defaultValue = false}) {
   if (json == null || !json.containsKey(key)) return defaultValue;
   return toBool(json[key]);
 }
 
-String asString(Map<String, dynamic>? json, String key,
-    {String defaultValue = ""}) {
+String? asString(Map<String, dynamic>? json, String key,
+    {String? defaultValue = ""}) {
   if (json == null || !json.containsKey(key)) return defaultValue;
   return toString(json[key]);
 }
 
-Map<String, dynamic> asMap(Map<String, dynamic>? json, String key,
+Map<String, dynamic>? asMap(Map<String, dynamic>? json, String key,
     {Map<String, dynamic>? defaultValue}) {
   if (json == null || !json.containsKey(key)) {
     return defaultValue ?? <String, dynamic>{};
@@ -84,26 +84,24 @@ Map<String, dynamic> asMap(Map<String, dynamic>? json, String key,
   return toMap(json[key]);
 }
 
-List asList(Map<String, dynamic>? json, String key, {List? defaultValue}) {
+List? asList(Map<String, dynamic>? json, String key, {List? defaultValue}) {
   if (json == null || !json.containsKey(key)) return defaultValue ?? [];
   return toList(json[key]);
 }
 
-List<int> asListInt(Map<String, dynamic>? json, String key,
+List<int>? asListInt(Map<String, dynamic>? json, String key,
     {List? defaultValue}) {
-  return asList(json, key, defaultValue: defaultValue)
-      .map((e) => toInt(e))
-      .toList();
+  final list = asList(json, key, defaultValue: defaultValue);
+  return list?.map((e) => toInt(e)).whereType<int>().toList();
 }
 
-List<String> asListString(Map<String, dynamic>? json, String key,
+List<String>? asListString(Map<String, dynamic>? json, String key,
     {List? defaultValue}) {
-  return asList(json, key, defaultValue: defaultValue)
-      .map((e) => toString(e))
-      .toList();
+  final list = asList(json, key, defaultValue: defaultValue);
+  return list?.map((e) => toString(e)).whereType<String>().toList();
 }
 
-T asT<T>(Map<String, dynamic>? json, String key, {T? defaultValue}) {
+T? asT<T>(Map<String, dynamic>? json, String key, {T? defaultValue}) {
   if (json == null || !json.containsKey(key)) {
     if (defaultValue != null) return defaultValue;
     if (0 is T) return 0 as T;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TeamProvider extends ChangeNotifier {
   bool _isLoading = false;
-  bool _isEmpty = false;
+  final bool _isEmpty = false;
 
   bool get isLoading => _isLoading;
 

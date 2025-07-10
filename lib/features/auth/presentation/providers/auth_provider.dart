@@ -1,105 +1,140 @@
-import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:responsive_admin_panel_flutter/features/dashboard/data/models/user_model.dart'
-    as model;
-import 'package:dio/dio.dart';
-import 'package:responsive_admin_panel_flutter/core/constants/app_constants.dart';
+import 'package:logger/logger.dart';
+import 'package:responsive_admin_panel_flutter/features/auth/domain/use_cases/get_auth_status_stream_use_case.dart';
+import 'package:responsive_admin_panel_flutter/features/auth/domain/use_cases/sign_in_use_case.dart';
+import 'package:responsive_admin_panel_flutter/features/auth/domain/use_cases/sign_out_use_case.dart';
+import 'package:responsive_admin_panel_flutter/features/auth/domain/use_cases/sign_up_use_case.dart';
+import 'package:responsive_admin_panel_flutter/features/auth/domain/use_cases/update_user_profile_use_case.dart';
+import 'package:responsive_admin_panel_flutter/features/user/domain/entities/user_entity.dart';
 
-class AuthProvider extends ChangeNotifier {
-  bool _isLoading = false;
-  model.User? _currentUser;
-  bool _isAuthenticated = false;
+class AuthProvider with ChangeNotifier {
+  final SignInUseCase _signInUseCase;
+  final SignOutUseCase _signOutUseCase;
+  final GetAuthStatusStreamUseCase _getAuthStatusStreamUseCase;
+  final SignUpUseCase _signUpUseCase;
+  final UpdateUserProfileUseCase _updateUserProfileUseCase;
+  late final StreamSubscription<UserEntity?> _authSubscription;
+
+  bool _isLoading = true;
+  UserEntity? _currentUser;
+  String? _errorMessage;
+
+  AuthProvider({
+    required SignInUseCase signInUseCase,
+    required SignOutUseCase signOutUseCase,
+    required GetAuthStatusStreamUseCase getAuthStatusStreamUseCase,
+    required SignUpUseCase signUpUseCase,
+    required UpdateUserProfileUseCase updateUserProfileUseCase,
+  })  : _signInUseCase = signInUseCase,
+        _signOutUseCase = signOutUseCase,
+        _getAuthStatusStreamUseCase = getAuthStatusStreamUseCase,
+        _signUpUseCase = signUpUseCase,
+        _updateUserProfileUseCase = updateUserProfileUseCase {
+    _initializeApp();
+  }
 
   bool get isLoading => _isLoading;
+  UserEntity? get currentUser => _currentUser;
+  bool get isAuthenticated => _currentUser != null;
+  String? get errorMessage => _errorMessage;
 
-  model.User? get currentUser => _currentUser;
+  Future<void> _initializeApp() async {
+    // Sign out any existing user to ensure a clean state on initialization.
+    await signOut();
+    // Now, start listening for authentication changes.
+    _listenToAuthChanges();
+  }
 
-  bool get isAuthenticated => _isAuthenticated;
-
-  Future<void> initialize() async {
-    _isLoading = true;
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final userData = prefs.getString('user');
-
-      if (userData != null) {
-        _currentUser = model.User.fromJson(jsonDecode(userData));
-        _isAuthenticated = true;
+  void _listenToAuthChanges() {
+    _authSubscription = _getAuthStatusStreamUseCase().listen((user) {
+      _currentUser = user;
+      if (_isLoading) {
+        _isLoading = false;
       }
+      notifyListeners();
+    });
+  }
+
+  Future<bool> signIn(String email, String password) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _currentUser = await _signInUseCase(email, password);
+      return true;
     } catch (e) {
-      debugPrint('Error initializing auth service: $e');
+      _errorMessage = e.toString();
+      return false;
     } finally {
-      _isLoading = false;
+      if (mounted) {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
   }
 
-  /// Attempts to sign in a user with the provided email and password.
-  ///
-  /// This function simulates an API call with a delay and checks if the provided
-  /// credentials match the demo credentials. If successful, it sets the current
-  /// user and authentication status, and stores the user data in shared preferences.
-  ///
-  /// Returns `true` if sign-in is successful, otherwise returns `false`.
-  /// Notifies listeners when the loading state changes.
-  ///
-  /// [email] The email address of the user attempting to sign in.
-  /// [password] The password of the user attempting to sign in.
-  Future<bool> signIn(String email, String password) async {
+  Future<bool> signUp(String email, String password) async {
     _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
+
     try {
-      final dio = Dio();
-      final response = await dio.post(
-        '${AppConstants.baseUrl}v1/api/auth/login',
-        data: {
-          'email': email,
-          'password': password,
-          'deviceInfo': 'deviceInfo',
-          'osInfo': 'osInfo',
-          'fcmToken': 'fcmToken',
-        },
-        options: Options(headers: {'Content-Type': 'application/json'}),
-      );
-      if (response.statusCode == 200 && response.data != null) {
-        final user = model.User(
-          id: response.data['data']['id']?.toString() ?? '',
-          name: response.data['data']['name'] ?? '',
-          email: response.data['data']['email'] ?? '',
-          avatarUrl: response.data['data']['avatarUrl'] ?? '',
-          role: response.data['data']['role'] ?? '',
-        );
-        _currentUser = user;
-        _isAuthenticated = true;
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('user', jsonEncode(user.toJson()));
-        return true;
-      }
-      return false;
+      _currentUser = await _signUpUseCase(email, password);
+      return true;
     } catch (e) {
-      debugPrint('Error signing in: $e');
+      _errorMessage = e.toString();
       return false;
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      if (mounted) {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
   }
 
   Future<void> signOut() async {
     _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('user');
-
-      _currentUser = null;
-      _isAuthenticated = false;
+      await _signOutUseCase();
+      _currentUser = null; // Explicitly set user to null on sign out
     } catch (e) {
-      debugPrint('Error signing out: $e');
+      _errorMessage = e.toString();
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      if (mounted) {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
   }
+
+  Future<void> updateUserProfile(String name, File? image) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _updateUserProfileUseCase(name, image);
+      // The auth stream will automatically provide the updated user data.
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      if (mounted) {
+        _isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.cancel();
+    super.dispose();
+  }
+
+  bool mounted = true;
 }

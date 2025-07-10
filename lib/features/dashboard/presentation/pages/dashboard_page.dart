@@ -3,14 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:responsive_admin_panel_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/dashboard_card.dart';
-import 'package:responsive_admin_panel_flutter/routes/route_names.dart';
-import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/app_drawer.dart';
+import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/custom_app_drawer.dart';
+import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/custom_app_bar.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
   @override
-  _DashboardPageState createState() => _DashboardPageState();
+  State<DashboardPage> createState() => _DashboardPageState();
 }
 
 class _DashboardPageState extends State<DashboardPage> {
@@ -18,127 +18,148 @@ class _DashboardPageState extends State<DashboardPage> {
   final List<String> _months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   final List<double> _revenueData = [4.2, 7.8, 6.5, 9.5, 8.0, 10.8, 9.8, 12.5, 11.2, 14.8, 13.5, 16.2];
   final List<double> _expenseData = [3.5, 5.2, 4.8, 6.2, 5.8, 7.5, 6.8, 8.2, 7.8, 9.5, 8.8, 10.2];
+  late List<Map<String, dynamic>> tasks;
 
   @override
-  /// Builds the dashboard screen.
-  ///
-  /// The dashboard screen is a scrollable list of widgets that display various
-  /// pieces of information about the user's projects and tasks. The widgets are
-  /// arranged in a responsive grid layout, with the content adapting to the
-  /// available screen size.
-  ///
-  /// The dashboard screen also includes a bottom navigation bar that allows the
-  /// user to navigate between different sections of the app. The navigation bar
-  /// is hidden when the user scrolls down and is visible when the user scrolls up.
-  ///
+  void initState() {
+    super.initState();
+    tasks = [
+      {
+        'title': 'Finalize Q2 report',
+        'dueDate': 'May 10, 2025',
+        'priority': 'High',
+        'priorityColor': Colors.red,
+        'completed': false,
+      },
+      {
+        'title': 'Design new landing page',
+        'dueDate': 'May 12, 2025',
+        'priority': 'Medium',
+        'priorityColor': Colors.orange,
+        'completed': true,
+      },
+      {
+        'title': 'Fix authentication bug',
+        'dueDate': 'May 15, 2025',
+        'priority': 'High',
+        'priorityColor': Colors.red,
+        'completed': false,
+      },
+      {
+        'title': 'Onboard new client',
+        'dueDate': 'May 18, 2025',
+        'priority': 'Low',
+        'priorityColor': Colors.green,
+        'completed': false,
+      },
+      {
+        'title': 'Prepare for team meeting',
+        'dueDate': 'May 20, 2025',
+        'priority': 'Low',
+        'priorityColor': Colors.green,
+        'completed': true,
+      },
+    ];
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthProvider>(context);
-    final user = authService.currentUser;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        actions: [
-          IconButton(
-            icon: Icon(
-              isDarkMode ? Icons.light_mode : Icons.dark_mode,
-              color: Theme.of(context).iconTheme.color,
-            ),
-            onPressed: () {
-              // Implementasi toggle tema (menggunakan library seperti shared_preferences)
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              // Implementasi notifikasi
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: CircleAvatar(
-              radius: 18.0,
-              backgroundImage: NetworkImage(user?.avatarUrl ?? 'https://ui-avatars.com/api/?name=User'),
-            ),
-          ),
-        ],
-      ),
-      drawer: AppDrawer(user: user, selectedRoute: RouteNames.dashboard),
+      appBar: const CustomAppBar(title: 'Dashboard'),
+      drawer: const AppDrawer(),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Welcome Section
-              Text(
-                'Welcome back, ${user?.name ?? 'User'}!',
-                style: Theme.of(context).textTheme.displayMedium,
+        child: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.all(16.0),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // Welcome Section
+                  Consumer<AuthProvider>(
+                    builder: (context, auth, child) {
+                      return Text(
+                        'Welcome back, ${auth.currentUser?.name ?? 'User'}!',
+                        style: Theme.of(context).textTheme.displayMedium,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    'Here\'s what\'s happening with your projects today.',
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.7),
+                    ),
+                  ),
+                  const SizedBox(height: 24.0),
+
+                  // Dashboard Cards
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+                    crossAxisSpacing: 16.0,
+                    mainAxisSpacing: 16.0,
+                    childAspectRatio: 1.2,
+                    children: [
+                      DashboardCard(
+                        title: 'Revenue',
+                        value: '\$58,945',
+                        icon: Icons.attach_money,
+                        color: Colors.green,
+                        onTap: () {},
+                      ),
+                      DashboardCard(
+                        title: 'Expenses',
+                        value: '\$29,842',
+                        icon: Icons.shopping_bag_outlined,
+                        color: Colors.red,
+                        onTap: () {},
+                      ),
+                      DashboardCard(
+                        title: 'Projects',
+                        value: '124',
+                        icon: Icons.work_outline,
+                        color: Colors.blue,
+                        onTap: () {},
+                      ),
+                      DashboardCard(
+                        title: 'Clients',
+                        value: '76',
+                        icon: Icons.person_outline,
+                        color: Colors.purple,
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32.0),
+
+                  // Revenue Chart
+                  _buildChartSection(context),
+                  const SizedBox(height: 32.0),
+
+                  // Recent Projects Title
+                  Text('Recent Projects', style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 16.0),
+                ]),
               ),
-              const SizedBox(height: 8.0),
-              Text(
-                'Here\'s what\'s happening with your projects today.',
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: Theme.of(context).textTheme.bodyLarge!.color!.withValues(alpha: 0.7),
-                ),
+            ),
+            _buildRecentProjectsSliver(context),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  const SizedBox(height: 32.0),
+                  // Active Tasks Title
+                  Text('Active Tasks', style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 16.0),
+                ]),
               ),
-              const SizedBox(height: 24.0),
-
-              // Dashboard Cards
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                childAspectRatio: 1.2,
-                children: [
-                  DashboardCard(
-                    title: 'Revenue',
-                    value: '\$58,945',
-                    icon: Icons.attach_money,
-                    color: Colors.green,
-                    onTap: () {},
-                  ),
-                  DashboardCard(
-                    title: 'Expenses',
-                    value: '\$29,842',
-                    icon: Icons.shopping_bag_outlined,
-                    color: Colors.red,
-                    onTap: () {},
-                  ),
-                  DashboardCard(
-                    title: 'Projects',
-                    value: '124',
-                    icon: Icons.work_outline,
-                    color: Colors.blue,
-                    onTap: () {},
-                  ),
-                  DashboardCard(
-                    title: 'Clients',
-                    value: '76',
-                    icon: Icons.person_outline,
-                    color: Colors.purple,
-                    onTap: () {},
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32.0),
-
-              // Revenue Chart
-              _buildChartSection(context),
-              const SizedBox(height: 32.0),
-
-              // Recent Projects
-              _buildRecentProjects(context),
-              const SizedBox(height: 32.0),
-
-              // Active Tasks
-              _buildActiveTasks(context),
-            ],
-          ),
+            ),
+            _buildActiveTasksSliver(context),
+          ],
         ),
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
@@ -160,7 +181,7 @@ class _DashboardPageState extends State<DashboardPage> {
         Text(
           'Monthly revenue and expenses for the current year',
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: textColor.withValues(alpha: 0.7),
+            color: textColor.withOpacity(0.7),
           ),
         ),
         const SizedBox(height: 24.0),
@@ -209,7 +230,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         child: Text(
                           _months[value.toInt()],
                           style: TextStyle(
-                            color: textColor.withValues(alpha: 0.7),
+                            color: textColor.withOpacity(0.7),
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                           ),
@@ -229,7 +250,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         child: Text(
                           '\${value.toInt()}K',
                           style: TextStyle(
-                            color: textColor.withValues(alpha: 0.7),
+                            color: textColor.withOpacity(0.7),
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                           ),
@@ -267,7 +288,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   isCurved: true,
                   gradient: LinearGradient(
                     colors: [
-                      Colors.green.withValues(alpha: 0.3),
+                      Colors.green.withOpacity(0.3),
                       Colors.green,
                     ],
                   ),
@@ -278,8 +299,8 @@ class _DashboardPageState extends State<DashboardPage> {
                     show: true,
                     gradient: LinearGradient(
                       colors: [
-                        Colors.green.withValues(alpha: 0.3),
-                        Colors.green.withValues(alpha: 0.0),
+                        Colors.green.withOpacity(0.3),
+                        Colors.green.withOpacity(0.0),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -295,7 +316,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   isCurved: true,
                   gradient: LinearGradient(
                     colors: [
-                      Colors.red.withValues(alpha: 0.3),
+                      Colors.red.withOpacity(0.3),
                       Colors.red,
                     ],
                   ),
@@ -306,8 +327,8 @@ class _DashboardPageState extends State<DashboardPage> {
                     show: true,
                     gradient: LinearGradient(
                       colors: [
-                        Colors.red.withValues(alpha: 0.3),
-                        Colors.red.withValues(alpha: 0.0),
+                        Colors.red.withOpacity(0.3),
+                        Colors.red.withOpacity(0.0),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -352,179 +373,151 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildRecentProjects(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Recent Projects',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            TextButton(
-              onPressed: () {
-                // Navigate to all projects
-              },
-              child: Text(
-                'View All',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                ),
+  SliverList _buildRecentProjectsSliver(BuildContext context) {
+    // Sample project data
+    final List<Map<String, dynamic>> projects = [
+      {
+        'name': 'E-commerce App Redesign',
+        'deadline': 'May 12, 2025',
+        'progress': 0.75,
+        'status': 'In Progress',
+        'statusColor': Colors.orange,
+        'members': 4,
+      },
+      {
+        'name': 'Finance Dashboard',
+        'deadline': 'May 25, 2025',
+        'progress': 0.45,
+        'status': 'In Progress',
+        'statusColor': Colors.orange,
+        'members': 3,
+      },
+      {
+        'name': 'Social Media App',
+        'deadline': 'May 30, 2025',
+        'progress': 0.20,
+        'status': 'Just Started',
+        'statusColor': Colors.blue,
+        'members': 5,
+      },
+      {
+        'name': 'Travel Booking Platform',
+        'deadline': 'May 05, 2025',
+        'progress': 1.0,
+        'status': 'Completed',
+        'statusColor': Colors.green,
+        'members': 2,
+      },
+    ];
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final project = projects[index];
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(16.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16.0),
-        SizedBox(
-          height: 200,
-          width: double.infinity,
-          child: ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 4,
-            separatorBuilder: (context, index) => const SizedBox(height: 16.0),
-            itemBuilder: (context, index) {
-              // Sample project data
-              final List<Map<String, dynamic>> projects = [
-                {
-                  'name': 'E-commerce App Redesign',
-                  'deadline': 'May 12, 2025',
-                  'progress': 0.75,
-                  'status': 'In Progress',
-                  'statusColor': Colors.orange,
-                  'members': 4,
-                },
-                {
-                  'name': 'Finance Dashboard',
-                  'deadline': 'May 25, 2025',
-                  'progress': 0.45,
-                  'status': 'In Progress',
-                  'statusColor': Colors.orange,
-                  'members': 3,
-                },
-                {
-                  'name': 'Social Media App',
-                  'deadline': 'May 30, 2025',
-                  'progress': 0.20,
-                  'status': 'Just Started',
-                  'statusColor': Colors.blue,
-                  'members': 5,
-                },
-                {
-                  'name': 'Travel Booking Platform',
-                  'deadline': 'May 05, 2025',
-                  'progress': 1.0,
-                  'status': 'Completed',
-                  'statusColor': Colors.green,
-                  'members': 2,
-                },
-              ];
-
-              final project = projects[index];
-
-              return Container(
-                height: 120, // Added fixed height to ensure finite constraints
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(16.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            project['name'],
-                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          project['name'],
+                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-                          decoration: BoxDecoration(
-                            color: project['statusColor'].withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: Text(
-                            project['status'],
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: project['statusColor'],
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                        decoration: BoxDecoration(
+                          color: project['statusColor'].withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 16.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
+                        child: Text(
+                          project['status'],
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                color: project['statusColor'],
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'Deadline',
                               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                color: Theme.of(context).textTheme.bodySmall!.color!.withValues(alpha: 0.7),
-                              ),
+                                    color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.7),
+                                  ),
                             ),
                             const SizedBox(height: 4.0),
                             Text(
                               project['deadline'],
                               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
+                                    fontWeight: FontWeight.w500,
+                                  ),
                             ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 80,
-                              height: 40,
-                              child: Stack(
-                                children: List.generate(
-                                  3,
-                                      (i) => Positioned(
-                                    left: i * 20.0,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Theme.of(context).scaffoldBackgroundColor,
-                                          width: 2.0,
-                                        ),
-                                        shape: BoxShape.circle,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 80,
+                            height: 30, // Menambahkan tinggi eksplisit
+                            child: Stack(
+                              children: List.generate(
+                                3,
+                                (i) => Positioned(
+                                  left: i * 20.0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        width: 2.0,
                                       ),
-                                      child: CircleAvatar(
-                                        radius: 13,
-                                        backgroundImage: NetworkImage(
-                                          'https://ui-avatars.com/api/?name=User${i + 1}&background=random',
-                                        ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: CircleAvatar(
+                                      radius: 13,
+                                      backgroundImage: NetworkImage(
+                                        'https://ui-avatars.com/api/?name=User${i + 1}&background=random',
                                       ),
                                     ),
                                   ),
-                                ).toList()..add(
+                                ),
+                              )..add(
                                   Positioned(
                                     left: 3 * 20.0,
                                     child: Container(
                                       height: 30,
                                       width: 30,
                                       decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                                        color: Theme.of(context).primaryColor.withOpacity(0.2),
                                         shape: BoxShape.circle,
                                         border: Border.all(
                                           color: Theme.of(context).scaffoldBackgroundColor,
@@ -544,136 +537,74 @@ class _DashboardPageState extends State<DashboardPage> {
                                     ),
                                   ),
                                 ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Progress',
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.7),
+                                  ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            LinearProgressIndicator(
+                              value: project['progress'],
+                              backgroundColor: Theme.of(context).dividerColor.withOpacity(0.1),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                project['progress'] == 1.0 ? Colors.green : Theme.of(context).primaryColor,
                               ),
+                              borderRadius: BorderRadius.circular(6.0),
+                              minHeight: 8.0,
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 16.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Progress',
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                  color: Theme.of(context).textTheme.bodySmall!.color!.withValues(alpha: 0.7),
-                                ),
-                              ),
-                              const SizedBox(height: 8.0),
-                              LinearProgressIndicator(
-                                value: project['progress'],
-                                backgroundColor: Theme.of(context).dividerColor.withValues(alpha: 0.1),
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  project['progress'] == 1.0
-                                      ? Colors.green
-                                      : Theme.of(context).primaryColor,
-                                ),
-                                borderRadius: BorderRadius.circular(6.0),
-                                minHeight: 8.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 16.0),
-                        Text(
-                          '${(project['progress'] * 100).toInt()}%',
-                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: project['progress'] == 1.0
-                                ? Colors.green
-                                : Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+                      ),
+                      const SizedBox(width: 16.0),
+                      Text(
+                        '${(project['progress'] * 100).toInt()}%',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: project['progress'] == 1.0 ? Colors.green : Theme.of(context).primaryColor,
+                            ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+        childCount: projects.length,
+      ),
     );
   }
 
-  Widget _buildActiveTasks(BuildContext context) {
-    final List<Map<String, dynamic>> tasks = [
-      {
-        'title': 'Design User Interface for E-commerce App',
-        'priority': 'High',
-        'priorityColor': Colors.red,
-        'dueDate': 'Today',
-        'completed': false,
-      },
-      {
-        'title': 'Implement Authentication Flow',
-        'priority': 'Medium',
-        'priorityColor': Colors.orange,
-        'dueDate': 'Tomorrow',
-        'completed': false,
-      },
-      {
-        'title': 'Create API Documentation',
-        'priority': 'Low',
-        'priorityColor': Colors.green,
-        'dueDate': 'May 08',
-        'completed': true,
-      },
-      {
-        'title': 'Fix Responsive Layout Issues',
-        'priority': 'Medium',
-        'priorityColor': Colors.orange,
-        'dueDate': 'May 10',
-        'completed': false,
-      },
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Active Tasks',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            TextButton(
-              onPressed: () {
-                // Navigate to all tasks
-              },
-              child: Text(
-                'View All',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16.0),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: tasks.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 12.0),
-          itemBuilder: (context, index) {
-            final task = tasks[index];
-
-            return Container(
-              height: 120, // Added fixed height to ensure finite constraints
+  SliverList _buildActiveTasksSliver(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final task = tasks[index];
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
+            child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(16.0),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: Colors.black.withOpacity(0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -693,23 +624,19 @@ class _DashboardPageState extends State<DashboardPage> {
                       width: 24,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: task['completed']
-                            ? Theme.of(context).primaryColor
-                            : Colors.transparent,
+                        color: task['completed'] ? Theme.of(context).primaryColor : Colors.transparent,
                         borderRadius: BorderRadius.circular(6.0),
                         border: Border.all(
-                          color: task['completed']
-                              ? Theme.of(context).primaryColor
-                              : Theme.of(context).dividerColor,
+                          color: task['completed'] ? Theme.of(context).primaryColor : Theme.of(context).dividerColor,
                           width: 2.0,
                         ),
                       ),
                       child: task['completed']
                           ? const Icon(
-                        Icons.check,
-                        size: 16.0,
-                        color: Colors.white,
-                      )
+                              Icons.check,
+                              size: 16.0,
+                              color: Colors.white,
+                            )
                           : null,
                     ),
                   ),
@@ -722,14 +649,12 @@ class _DashboardPageState extends State<DashboardPage> {
                         Text(
                           task['title'],
                           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            decoration: task['completed']
-                                ? TextDecoration.lineThrough
-                                : null,
-                            color: task['completed']
-                                ? Theme.of(context).textTheme.bodyLarge!.color!.withValues(alpha: 0.5)
-                                : Theme.of(context).textTheme.bodyLarge!.color,
-                          ),
+                                fontWeight: FontWeight.w500,
+                                decoration: task['completed'] ? TextDecoration.lineThrough : null,
+                                color: task['completed']
+                                    ? Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.5)
+                                    : Theme.of(context).textTheme.bodyLarge!.color,
+                              ),
                         ),
                         const SizedBox(height: 4.0),
                         Row(
@@ -740,29 +665,29 @@ class _DashboardPageState extends State<DashboardPage> {
                                 vertical: 2.0,
                               ),
                               decoration: BoxDecoration(
-                                color: task['priorityColor'].withValues(alpha: 0.1),
+                                color: task['priorityColor'].withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(4.0),
                               ),
                               child: Text(
                                 task['priority'],
                                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                  color: task['priorityColor'],
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                      color: task['priorityColor'],
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                             ),
                             const SizedBox(width: 8.0),
                             Icon(
                               Icons.calendar_today_outlined,
                               size: 14.0,
-                              color: Theme.of(context).textTheme.bodySmall!.color!.withValues(alpha: 0.7),
+                              color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.7),
                             ),
                             const SizedBox(width: 4.0),
                             Text(
                               task['dueDate'],
                               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                color: Theme.of(context).textTheme.bodySmall!.color!.withValues(alpha: 0.7),
-                              ),
+                                    color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.7),
+                                  ),
                             ),
                           ],
                         ),
@@ -778,14 +703,15 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ],
               ),
-            );
-          },
-        ),
-      ],
+            ),
+          );
+        },
+        childCount: tasks.length,
+      ),
     );
   }
 
-  Widget _buildBottomNavigationBar() {
+  BottomNavigationBar _buildBottomNavigationBar() {
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
       onTap: (index) {
@@ -793,45 +719,28 @@ class _DashboardPageState extends State<DashboardPage> {
           _selectedIndex = index;
         });
       },
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Theme.of(context).cardColor,
-      selectedItemColor: Theme.of(context).primaryColor,
-      unselectedItemColor: Theme.of(context).hintColor,
-      selectedLabelStyle: const TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 12.0,
-      ),
-      unselectedLabelStyle: const TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 12.0,
-      ),
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.dashboard_outlined),
-          activeIcon: Icon(Icons.dashboard),
           label: 'Dashboard',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.work_outline),
-          activeIcon: Icon(Icons.work),
           label: 'Projects',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.task_alt_outlined),
-          activeIcon: Icon(Icons.task_alt),
           label: 'Tasks',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.chat_bubble_outline),
-          activeIcon: Icon(Icons.chat_bubble),
-          label: 'Messages',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person_outline),
-          activeIcon: Icon(Icons.person),
-          label: 'Profile',
+          icon: Icon(Icons.settings_outlined),
+          label: 'Settings',
         ),
       ],
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: Theme.of(context).primaryColor,
+      unselectedItemColor: Colors.grey,
+      showUnselectedLabels: true,
     );
   }
 }

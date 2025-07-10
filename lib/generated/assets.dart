@@ -30,7 +30,7 @@ class Assets {
   static const String useCasesGetUserUseCase = 'lib/features/user/domain/use_cases/get_user_use_case.dart';
   static const String utilsSaveConvert = 'lib/core/utils/save_convert.dart';
   static const String utilsUtils = 'lib/core/utils/utils.dart';
-  static const String widgetsAppDrawer = 'lib/features/shared/presentation/widgets/app_drawer.dart';
+  static const String widgetsAppDrawer = 'lib/features/shared/presentation/widgets/custom_app_drawer.dart';
   static const String widgetsCustomButton = 'lib/features/shared/presentation/widgets/custom_button.dart';
   static const String widgetsCustomNotification = 'lib/features/shared/presentation/widgets/custom_notification.dart';
   static const String widgetsCustomPaginatedDataTable = 'lib/features/shared/presentation/widgets/custom_paginated_data_table.dart';

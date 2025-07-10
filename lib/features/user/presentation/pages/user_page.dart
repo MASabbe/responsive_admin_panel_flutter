@@ -4,24 +4,16 @@ import 'package:provider/provider.dart';
 import 'package:responsive_admin_panel_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/providers/team_provider.dart';
 import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/custom_paginated_data_table.dart';
-import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/app_drawer.dart';
+import 'package:responsive_admin_panel_flutter/features/shared/presentation/widgets/custom_app_drawer.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({super.key});
 
   @override
-  /// Creates the mutable state for the `TeamPage` widget.
-  ///
-  /// Returns an instance of `_TeamState`, where the build logic
-  /// and state management for the `TeamPage` is implemented.
-  ///
-  /// This method is called when the `TeamPage` is inserted into
-  /// the widget tree and is responsible for creating the state
-  /// object that persists throughout the lifecycle of the widget.
-  _UserState createState() => _UserState();
+  State<UserPage> createState() => _UserPageState();
 }
 
-class _UserState extends State<UserPage> {
+class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthProvider>(context);
@@ -58,7 +50,7 @@ class _UserState extends State<UserPage> {
           ),
         ],
       ),
-      drawer: AppDrawer(user: user, selectedRoute: '/team'),
+      drawer: const AppDrawer(),
       body: SafeArea(
         child: Consumer<TeamProvider>(
           builder: (context, teamProvider, child) {
